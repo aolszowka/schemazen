@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
 using SchemaZen.Library.Models.Comparers;
 
@@ -1337,7 +1339,7 @@ where name = @dbname
 
 		log?.Invoke(TraceLevel.Info, "Exporting data...");
 		var index = 0;
-		foreach (var t in DataTables) {
+		Parallel.ForEach(DataTables, t => {
 			log?.Invoke(
 				TraceLevel.Verbose,
 				$"Exporting data from {t.Owner + "." + t.Name} (table {++index} of {DataTables.Count})...");
@@ -1355,7 +1357,7 @@ where name = @dbname
 			} else {
 				sw.Close();
 			}
-		}
+		});
 	}
 
 	public static string ScriptPropList(IList<DbProp> props) {
